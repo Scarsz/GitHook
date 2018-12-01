@@ -6,7 +6,6 @@ import requests
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
-wait_for_completion = False
 
 
 @app.route('/')
@@ -133,7 +132,7 @@ def push(channel, token, flags):
         "embeds": [embed]
     }
 
-    execution = requests.post("https://discordapp.com/api/webhooks/" + str(channel) + "/" + token + "?wait=" + str(wait_for_completion).lower(), json=payload)
+    execution = requests.post("https://discordapp.com/api/webhooks/" + str(channel) + "/" + token, json=payload)
     if execution.status_code == 200 or execution.status_code == 204:
         return "", 204
     else:
