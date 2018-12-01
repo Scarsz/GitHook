@@ -16,11 +16,15 @@ def index():
 
 @app.route('/<int:channel>/<token>', methods=['POST'])
 def receive_default(channel, token):
-    return receive(channel, token, "chptv")
+    return push(channel, token, "chptv")
 
 
 @app.route('/<int:channel>/<token>/<flags>', methods=['POST'])
 def receive(channel, token, flags):
+    return push(channel, token, flags)
+
+
+def push(channel, token, flags):
     remote = request.headers['X-Forwarded-For'] if 'X-Forwarded-For' in request.headers else str(request.host)
 
     if request.headers['Content-Type'] != "application/json":
@@ -47,7 +51,7 @@ def receive(channel, token, flags):
         print("Denying " + remote + ": invalid user agent \"" + user_agent + "\"")
         return "", 403
 
-    flags = {
+    f = {
         'contributor_link': True if 'c' in flags else False,
         'descriptions': True if 'd' in flags else False,
         'files': True if 'f' in flags else False,
@@ -68,21 +72,21 @@ def receive(channel, token, flags):
         commit_hash = "[`" + commit['id'][:7] + "`](" + url + ")"
         title = str(commit['message']).split("\n")[0]
         description = "\n".join(filter(None, str(commit['message']).split("\n")[1:]))
-        if len(title) > 58 and not flags['verbose']:
+        if len(title) > 58 and not f['verbose']:
             title = title[58:] + "..."
         if pusher != commit['committer']:
             title += " - " + pusher
         commits.append(
-            ((commit_hash + " ") if flags['hashes'] else "") +
+            ((commit_hash + " ") if f['hashes'] else "") +
             title +
-            (("\n" + description) if description != "" and flags['descriptions'] else "")
+            (("\n" + description) if description != "" and f['descriptions'] else "")
         )
 
     # working with time in programs sucks
     timestamp = iso8601.parse_date(data['head_commit']['timestamp']).astimezone(datetime.timezone.utc).replace(tzinfo=None).isoformat()
 
     embed = {
-        "title": "[" + (data['repository']['name'] if flags['short_name'] else data['repository']['full_name']) + ":" + branch + "] " + str(len(data['commits'])) + " new commits",
+        "title": "[" + (data['repository']['name'] if f['short_name'] else data['repository']['full_name']) + ":" + branch + "] " + str(len(data['commits'])) + " new commits",
         "url": data['compare'],
         "description": "\n".join(commits),
         "color": 16777215,
@@ -95,23 +99,21 @@ def receive(channel, token, flags):
             "name": data['pusher']['name'],
             "url":
                 (data['repository']['html_url'] + "/commits?author=" + data['pusher']['name'])
-                if flags['contributor_link'] else
+                if f['contributor_link'] else
                 ("https://github.com/" + data['pusher']['name']),
             "icon_url": "https://avatars1.githubusercontent.com/u/7691988?v=4"
-        },
-        "fields": []
+        }
     }
-    if flags['picture']:
+    if f['picture']:
         embed['thumbnail'] = {
             "url": data['repository']['owner']['avatar_url']
         }
-    if flags['joke']:
+    if f['joke']:
         joke = requests.get("https://safe-falls-22549.herokuapp.com/random_joke").json()
-        embed['fields'].append({
+        embed['fields'] = [{
             "name": joke["setup"],
-            "punchline": joke["punchline"],
-            "inline": False
-        })
+            "punchline": joke["punchline"]
+        }]
 
     payload = {
         "username": "GitHub",
