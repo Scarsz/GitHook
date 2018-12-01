@@ -21,21 +21,24 @@ def receive_default(channel, token):
 
 @app.route('/<int:channel>/<token>/<flags>', methods=['GET', 'POST'])
 def receive(channel, token, flags="chptv"):
-    method = request.headers["X-GitHub-Event"] if "X-GitHub-Event" in request.headers else None
-    if method is None:
-        print("Denying " + request.host + ": no X-GitHub-Event supplied")
-        return "", 400
-    elif method != "push":
-        print("Denying " + request.host + ": only push is implemented")
-        return "", 418
     if request.headers['Content-Type'] != "application/json":
         print("Denying " + request.host + ": only JSON is supported")
         return "", 415
     if request.data is None or request.data.decode("UTF-8") == "":
         print("Denying " + request.host + ": no data received")
         return "", 422
-
     data = json.loads(request.data.decode("UTF-8"))
+
+    method = request.headers["X-GitHub-Event"] if "X-GitHub-Event" in request.headers else None
+    if method is None:
+        print("Denying " + request.host + ": no X-GitHub-Event supplied")
+        return "", 400
+    elif method == "ping":
+        print("Received ping for repository " + data['repository']['full_name'] + ": " + data['zen'])
+        return "", 204
+    elif method != "push":
+        print("Denying " + request.host + ": only push is implemented")
+        return "", 418
 
     # user_agent = request.headers['User-Agent']  # request.user_agent.string
     # if not user_agent.startswith("GitHub-Hookshot"):
