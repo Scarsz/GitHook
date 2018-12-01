@@ -74,7 +74,7 @@ def push(channel, token, flags):
         description = "\n".join(filter(None, str(commit['message']).split("\n")[1:]))
         if len(title) > 58 and not f['verbose']:
             title = title[58:] + "..."
-        if pusher != commit['committer']:
+        if pusher != commit['committer']['name']:
             title += " - " + pusher
         commits.append(
             ((commit_hash + " ") if f['hashes'] else "") +
