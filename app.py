@@ -40,7 +40,11 @@ def push(channel, token, flags):
         print("Denying " + remote + ": no X-GitHub-Event supplied")
         return "", 400
     elif method == "ping":
-        print("Received ping for repository " + data['repository']['full_name'] + ": " + data['zen'])
+        print("Received ping for " +
+              (("repository " + data['repository']['full_name'])
+               if "repository" in data else
+               ("organization " + data['organization']['login'])) +
+              ": " + data['zen'])
         return "", 204
     elif method != "push":
         print("Denying " + remote + ": only push is implemented")
