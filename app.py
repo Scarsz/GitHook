@@ -102,7 +102,8 @@ def push(channel, token, flags):
                 if f['contributor_link'] else
                 ("https://github.com/" + data['pusher']['name']),
             "icon_url": "https://avatars1.githubusercontent.com/u/7691988?v=4"
-        }
+        },
+        "fields": {}
     }
     if f['picture']:
         embed['thumbnail'] = {
@@ -110,10 +111,10 @@ def push(channel, token, flags):
         }
     if f['joke']:
         joke = requests.get("https://safe-falls-22549.herokuapp.com/random_joke").json()
-        embed['fields'] = [{
+        embed['fields'].append({
             "name": joke["setup"],
             "value": joke["punchline"]
-        }]
+        })
 
     payload = {
         "username": "GitHub",
