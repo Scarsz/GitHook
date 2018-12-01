@@ -87,10 +87,17 @@ def push(channel, token, flags):
         )
 
     # working with time in programs sucks
-    timestamp = iso8601.parse_date(data['head_commit']['timestamp']).astimezone(datetime.timezone.utc).replace(tzinfo=None).isoformat()
+    timestamp = iso8601\
+        .parse_date(data['head_commit']['timestamp'])\
+        .astimezone(datetime.timezone.utc)\
+        .replace(tzinfo=None)\
+        .isoformat()
 
     embed = {
-        "title": "[" + (data['repository']['name'] if f['short_name'] else data['repository']['full_name']) + ":" + branch + "] " + str(len(data['commits'])) + " new commits",
+        "title": "[" + (data['repository']['name']
+                        if f['short_name'] else
+                        data['repository']['full_name']) + ":" + branch + "] " +
+                 str(len(data['commits'])) + " new commits",
         "url": data['compare'],
         "description": "\n".join(commits),
         "color": 16777215,
