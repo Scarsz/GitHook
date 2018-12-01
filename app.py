@@ -19,7 +19,7 @@ def receive_default(channel, token):
     return receive(channel, token)
 
 
-@app.route('/<int:channel>/<token>/<flags>', methods=['GET', 'POST'])
+@app.route('/<int:channel>/<token>/<flags>', methods=['POST'])
 def receive(channel, token, flags="chptv"):
     remote = request.headers['X-Forwarded-For'] if 'X-Forwarded-For' in request.headers else str(request.host)
 
