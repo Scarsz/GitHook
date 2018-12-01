@@ -112,7 +112,7 @@ def push(channel, token, flags):
         joke = requests.get("https://safe-falls-22549.herokuapp.com/random_joke").json()
         embed['fields'] = [{
             "name": joke["setup"],
-            "punchline": joke["punchline"]
+            "value": joke["punchline"]
         }]
 
     payload = {
