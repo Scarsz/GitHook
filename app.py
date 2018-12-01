@@ -16,11 +16,11 @@ def index():
 
 @app.route('/<int:channel>/<token>', methods=['POST'])
 def receive_default(channel, token):
-    return receive(channel, token)
+    return receive(channel, token, "chptv")
 
 
 @app.route('/<int:channel>/<token>/<flags>', methods=['POST'])
-def receive(channel, token, flags="chptv"):
+def receive(channel, token, flags):
     remote = request.headers['X-Forwarded-For'] if 'X-Forwarded-For' in request.headers else str(request.host)
 
     if request.headers['Content-Type'] != "application/json":
