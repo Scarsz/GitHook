@@ -1,0 +1,105 @@
+<!doctype html>
+<!--
+  psst. hey you.
+  quack.
+-->
+<head>
+    <title>GitHook</title>
+</head>
+<body>
+<div id="literature">
+    <h1>GitHook</h1>
+    <p><strong>The less ugly looking GitHub -> Discord webhook tool</strong></p>
+    <p>If you're not counting the website, that is.</p>
+    <p></p>
+    <h3>To install:</h3>
+    <ol start="0">
+        <li>Delete your old webhook from your GitHub organization/repo if you have one- we'll be making a new one.</li>
+        <li>Create a webhook for the Discord channel you want to have commit messages sent to.
+            <ul>
+                <li>If you have a webhook being used by GitHub previously, you can just copy the URL from that one and skip this step.</li>
+            </ul>
+            <ol>
+                <li>Make a text channel named <code>#commits</code> or something similar, if you don't already have one.</li>
+                <li>Right click the text channel in Discord.</li>
+                <li>Select <strong>Edit channel</strong>.</li>
+                <li>Select <strong>Webhooks</strong> on the left.</li>
+                <li>Click <strong>Create Webhook</strong> on the top right.</li>
+                <li>Name it <strong>GitHub</strong>. If you set another name, it won't be used.</li>
+                <li>On the bottom, click <strong>Copy</strong> next to the webhook URL. Paste this URL into the below configurator.</li>
+                <li>Save the webhook.</li>
+            </ol>
+        </li>
+        <li>Go to your GitHub organization's/repository's settings and go to the <strong>Webhooks</strong> tab.</li>
+        <li>On the top right, click <strong>Add webhook</strong></li>
+        <li>For the payload URL, use the below configurator to determine the URL you should be using.</li>
+        <li><span style="color: red">Important:</span> set the <strong>Content type</strong> checkbox to <code>application/json</code>! If you fail to do this, the server will give you 415 errors.</li>
+        <li>Be sure that only <code>push</code> events are being sent (the first option). If any other GitHub events are sent, they won't show up.
+            <ul>
+                <li>If you want to have other notifications while the others are being implemented, follow the normal steps to make a normal GitHub -> Discord webhook and select all events <strong>except</strong> push.</li>
+            </ul>
+        </li>
+        <li>Click <strong>Add webhook</strong></li>
+        <li>Push a test commit; profit.</li>
+    </ol>
+</div>
+<div id="converter" style="width: 100%;">
+    <h2>Link converter & configurator</h2>
+    <p><label for="discordLink">Discord webhook link: </label><input id="discordLink" type="text" placeholder="insert discord webhook URL here" size="100%" onchange="updateOutput()" onkeyup="updateOutput()"></p>
+    <p><label for="githookLink">GitHook link: </label><button id="copy" data-clipboard-target="#githookLink">Copy</button> <input id="githookLink" type="text" placeholder="insert discord webhook URL above" size="100%" readonly></p>
+</div>
+<div id="flags">
+    <h2>Available flags:</h2>
+    <p>default - chptv</p>
+    <ul>
+        <li><label for="flag_c"></label><input id="flag_c" type="checkbox" onchange="updateOutput()" checked> c - flag_contributor_links = use "commits by xyz" link instead of user profile link for title url</li>
+        <li><label for="flag_d"></label><input id="flag_d" type="checkbox" onchange="updateOutput()"> d - flag_descriptions = show commit descriptions</li>
+        <li><label for="flag_f"></label><input id="flag_f" type="checkbox" onchange="updateOutput()"> f - flag_files = show files added/removed/modified</li>
+        <li><label for="flag_h"></label><input id="flag_h" type="checkbox" onchange="updateOutput()" checked> h - flag_hashes = show 6-character commit hash prefixing commit messages</li>
+        <li><label for="flag_h"></label><input id="flag_h" type="checkbox" onchange="updateOutput()"> j - flag_joke = attach random joke to each embed</li>
+        <li><label for="flag_p"></label><input id="flag_p" type="checkbox" onchange="updateOutput()" checked> p - flag_picture = show avatar of repository owner</li>
+        <li><label for="flag_s"></label><input id="flag_s" type="checkbox" onchange="updateOutput()"> s - flag_short_name = show only repository name instead of "owner name/repository name"</li>
+        <li><label for="flag_t"></label><input id="flag_t" type="checkbox" onchange="updateOutput()" checked> t - flag_time = show time of git push in footer of embed</li>
+        <li><label for="flag_v"></label><input id="flag_v" type="checkbox" onchange="updateOutput()" checked> v - flag_verbose = show full commit title instead of truncated at 48 characters</li>
+    </ul>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script type="application/javascript">
+    new ClipboardJS("#copy");
+    document.getElementById("copy").onclick = function () {
+        document.getElementById("copy").innerText = "Copied";
+    };
+
+    function updateOutput() {
+        const discordLinkInput = document.getElementById("discordLink");
+        const githookLinkOutput = document.getElementById("githookLink");
+
+        const webhook_link_regex = /https:\/\/(?:canary\.|)?discordapp\.com\/api\/webhooks\/(\d+)\/(\w+)/;
+        const matchResults = discordLinkInput.value.match(webhook_link_regex);
+        if (matchResults == null || matchResults.length !== 3) {
+            discordLinkInput.style.outlineColor = "red";
+            discordLinkInput.style.backgroundColor = "red";
+            githookLinkOutput.value = "";
+            return;
+        } else {
+            discordLinkInput.style.outlineColor = "green";
+            discordLinkInput.style.backgroundColor = null;
+        }
+        const webhookChannel = matchResults[1];
+        const webhookSecret = matchResults[2];
+
+        const flags = [];
+        if (document.getElementById("flag_c").checked) flags.puzsh("c");
+        if (document.getElementById("flag_d").checked) flags.push("d");
+        if (document.getElementById("flag_f").checked) flags.push("f");
+        if (document.getElementById("flag_h").checked) flags.push("h");
+        if (document.getElementById("flag_p").checked) flags.push("p");
+        if (document.getElementById("flag_s").checked) flags.push("s");
+        if (document.getElementById("flag_t").checked) flags.push("t");
+        if (document.getElementById("flag_v").checked) flags.push("v");
+        const usingDefaultFlags = flags.sort().join('') === ["chptv"].join('');
+
+        githookLinkOutput.value = "https://githook.scarsz.me/" + webhookChannel + "/" + webhookSecret + (usingDefaultFlags ? "" : "/" + flags.join(''));
+    }
+</script>
+</body>
