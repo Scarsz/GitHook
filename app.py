@@ -42,10 +42,10 @@ def receive(channel, token, flags="chptv"):
         print("Denying " + remote + ": only push is implemented")
         return "", 418
 
-    # user_agent = request.headers['User-Agent']  # request.user_agent.string
-    # if not user_agent.startswith("GitHub-Hookshot"):
-    #     print("Denying " + request.host + ": invalid user agent \"" + user_agent + "\"")
-    #     return "", 403
+    user_agent = request.headers['User-Agent']
+    if not user_agent.startswith("GitHub-Hookshot"):
+        print("Denying " + remote + ": invalid user agent \"" + user_agent + "\"")
+        return "", 403
 
     flags = {
         'contributor_link': True if 'c' in flags else False,
