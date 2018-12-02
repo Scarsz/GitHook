@@ -111,7 +111,7 @@ def push(channel, token, flags):
                 (data['repository']['html_url'] + "/commits?author=" + data['pusher']['name'])
                 if f['contributor_link'] else
                 ("https://github.com/" + data['pusher']['name']),
-            "icon_url": "https://avatars1.githubusercontent.com/u/7691988?v=4"
+            "icon_url": data['sender']['avatar_url']
         },
         "fields": {}
     }
