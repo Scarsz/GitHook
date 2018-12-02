@@ -96,7 +96,7 @@ def push(channel, token, flags):
         "title": "[" + (data['repository']['name']
                         if f['short_name'] else
                         data['repository']['full_name']) + ":" + branch + "] " +
-                 str(len(data['commits'])) + " new commits",
+                 str(len(data['commits'])) + " new commit" + ("s" if len(data['commits']) > 1 else ""),
         "url": data['compare'],
         "description": "\n".join(commits),
         "color": 16777215,
