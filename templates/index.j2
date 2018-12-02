@@ -74,7 +74,7 @@
         const discordLinkInput = document.getElementById("discordLink");
         const githookLinkOutput = document.getElementById("githookLink");
 
-        const webhook_link_regex = /https:\/\/(?:canary\.|)?discordapp\.com\/api\/webhooks\/(\d+)\/([\w-]+)/;
+        const webhook_link_regex = /https:\/\/(?:canary\.)?discordapp\.com\/api\/webhooks\/(\d+)\/([\w-]+)/;
         const matchResults = discordLinkInput.value.match(webhook_link_regex);
         if (matchResults == null || matchResults.length !== 3) {
             discordLinkInput.style.outlineColor = "red";
