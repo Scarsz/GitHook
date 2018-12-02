@@ -33,13 +33,13 @@
         <li>Go to your GitHub organization's/repository's settings and go to the <strong>Webhooks</strong> tab.</li>
         <li>On the top right, click <strong>Add webhook</strong></li>
         <li>For the payload URL, use the below configurator to determine the URL you should be using.</li>
-        <li><span style="color: red">Important:</span> set the <strong>Content type</strong> checkbox to <code>application/json</code>! If you fail to do this, the server will give you 415 errors.</li>
+        <li><span style="color: red">Important:</span> set the <strong>Content type</strong> dropdown to <code>application/json</code>! If you fail to do this, the server will give you 415 errors.</li>
         <li>Be sure that only <code>push</code> events are being sent (the first option). If any other GitHub events are sent, they won't show up.
             <ul>
                 <li>If you want to have other notifications while the others are being implemented, follow the normal steps to make a normal GitHub -> Discord webhook and select all events <strong>except</strong> push.</li>
             </ul>
         </li>
-        <li>Click <strong>Add webhook</strong></li>
+        <li>Click <strong>Add webhook</strong>.</li>
         <li>Push a test commit; profit.</li>
     </ol>
 </div>
