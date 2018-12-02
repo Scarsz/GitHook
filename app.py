@@ -132,7 +132,8 @@ def push(channel, token, flags):
         "embeds": [embed]
     }
 
-    execution = requests.post("https://discordapp.com/api/webhooks/" + str(channel) + "/" + token, json=payload)
+    url = "https://discordapp.com/api/webhooks/" + str(channel) + "/" + token
+    execution = requests.post(url, json=payload)
     if execution.status_code == 200 or execution.status_code == 204:
         return "", 204
     else:
