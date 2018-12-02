@@ -113,7 +113,7 @@ def push(channel, token, flags):
                 ("https://github.com/" + data['pusher']['name']),
             "icon_url": data['sender']['avatar_url']
         },
-        "fields": {}
+        "fields": []
     }
     if f['picture']:
         embed['thumbnail'] = {
