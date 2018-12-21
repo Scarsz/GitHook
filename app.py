@@ -120,7 +120,7 @@ def push(channel, token, flags):
             "url": data['repository']['owner']['avatar_url']
         }
     if f['joke']:
-        joke = requests.get("https://safe-falls-22549.herokuapp.com/random_joke").json()
+        joke = requests.get("https://official-joke-api.herokuapp.com/random_joke").json()
         embed['fields'].append({
             "name": joke["setup"],
             "value": joke["punchline"]
