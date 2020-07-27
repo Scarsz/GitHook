@@ -129,7 +129,7 @@ def push(channel, token, flags):
 
     payload = {
         "username": "GitHub",
-        "avatar_url": "https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png",
+        "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
         "embeds": [embed]
     }
 
