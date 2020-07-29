@@ -77,8 +77,9 @@ def push(channel, token, flags):
         description = "\n".join(filter(None, str(commit['message']).split("\n")[1:]))
         if len(title) > 58 and not f['verbose']:
             title = title[58:] + "..."
-        if pusher != commit['committer']['name']:
-            title += " - " + pusher
+        committer = commit['committer']['name']
+        if pusher != committer:
+            title += " - " + committer
         commits.append(
             ((commit_hash + " ") if f['hashes'] else "") +
             title +
@@ -128,7 +129,7 @@ def push(channel, token, flags):
 
     payload = {
         "username": "GitHub",
-        "avatar_url": "https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png",
+        "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
         "embeds": [embed]
     }
 
